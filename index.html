@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Question</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffe6e6;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2; /* Ensure the buttons are on top of the bunnies */
+        }
+
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #ff4081;
+        }
+
+        .question.thank-you {
+            color: #ff0055;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 3; /* Ensure buttons are above the bunnies */
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, font-size 0.3s ease; /* Added transition for font-size */
+            z-index: 3; /* Ensure the buttons are clickable above the images */
+        }
+
+        .yes {
+            background-color: #ff4081;
+            color: white;
+        }
+
+        .yes:hover {
+            background-color: #e03370;
+        }
+
+        .no {
+            background-color: #cccccc;
+            color: #333333;
+            position: relative;
+        }
+
+        .no:hover {
+            background-color: #b3b3b3;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 105, 180, 0.8);
+            border-radius: 50%;
+            opacity: 0;
+            animation: fall 5s linear infinite, fadeIn 1s forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-120vh);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh); /* Only translate vertically */
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .bunny {
+            width: 200px; /* Make the bunny bigger */
+            height: auto; /* Maintain aspect ratio */
+            position: absolute;
+            top: 50%;
+            left: 20%; /* Position it to the left */
+            transform: translateY(-50%);
+            z-index: 1; /* Ensure the bunnies are behind the buttons */
+        }
+
+        .bunny-right {
+            width: 200px; /* Make the bunny bigger */
+            height: auto; /* Maintain aspect ratio */
+            position: absolute;
+            top: 50%;
+            right: 20%; /* Position it to the right */
+            transform: translateY(-50%);
+            z-index: 1; /* Ensure the bunnies are behind the buttons */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question">Hey Breanna! <br> Will you be my Valentine?</div>
+        <div class="buttons">
+            <button class="yes" onclick="handleYes()">Yes</button>
+            <button class="no" onclick="handleNo()">No</button>
+        </div>
+    </div>
+
+    <!-- Bunny images placed on the left and right sides -->
+    <img src="/bunny.webp" alt="Bunny" class="bunny">
+    <img src="/bunny right.jpg" alt="Bunny" class="bunny-right">
+
+    <script>
+        const noButton = document.querySelector('.no');
+        const yesButton = document.querySelector('.yes');
+        const container = document.querySelector('.container');
+        const question = document.querySelector('.question');
+        const bunny = document.querySelector('.bunny');
+        const bunnyRight = document.querySelector('.bunny-right');
+
+        const questionBank = [
+            "Pleaseee Breannaaaa!!",
+            "You really should say yes:)",
+            "I promise you'll have a good Valentine!",
+            "Don't make the bunnies sad :(",
+            "But I love you!",
+            "I will give you kids:)"
+        ];
+
+        function createConfetti() {
+            setInterval(() => {
+                for (let i = 0; i < 100; i++) { // Number of confetti per interval
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+
+                    // Adjust confetti left position to ensure full coverage
+                    confetti.style.left = `${Math.random() * 100}vw`;  // Full viewport width coverage
+                    confetti.style.animationDelay = `${Math.random() * 1}s`; // Random delay of up to 1 second
+                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
+
+                    document.body.appendChild(confetti);
+
+                    // Remove confetti after 5 seconds
+                    setTimeout(() => confetti.remove(), 5000);
+                }
+            }, 500); // Generate new confetti every 500ms
+        }
+
+        function handleYes() {
+            question.textContent = "Thank you! You've made the right decision!";
+            question.classList.add('thank-you');
+            yesButton.style.display = 'none';
+            noButton.style.display = 'none';
+            bunny.style.display = 'none';  // Hide bunny after clicking "Yes"
+            bunnyRight.style.display = 'none';  // Hide right bunny after clicking "Yes"
+            createConfetti();
+        }
+
+        function handleNo() {
+            const containerRect = container.getBoundingClientRect();
+            const noButtonRect = noButton.getBoundingClientRect();
+
+            const maxX = containerRect.width - noButtonRect.width;
+            const maxY = containerRect.height - noButtonRect.height;
+
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+
+            noButton.style.transform = `translate(${newX}px, ${newY}px)`;
+
+            const currentFontSize = parseFloat(window.getComputedStyle(yesButton).fontSize);
+            yesButton.style.fontSize = `${currentFontSize + 4}px`; // Increases font size of "Yes" button
+
+            // Change the question to a random one from the bank
+            const randomIndex = Math.floor(Math.random() * questionBank.length);
+            question.textContent = questionBank[randomIndex];
+        }
+    </script>
+</body>
+</html>
